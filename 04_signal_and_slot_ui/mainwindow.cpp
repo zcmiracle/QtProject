@@ -22,6 +22,7 @@ void MainWindow::on_pushButton_clicked()
     qDebug() << "on_pushButton_clicked()";
 }
 
+// 事件的名字
 void MainWindow::on_registerButton_clicked()
 {
     qDebug() << "on_registerButton_clicked()";
