@@ -10,5 +10,11 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+// 自定义槽函数
+public slots:
+    void handleClick();
+
 };
+
 #endif // MAINWINDOW_H

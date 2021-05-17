@@ -15,6 +15,7 @@ public slots:
 //    void handleExit();
     // 有返回值
     int handleExit(int value1, int value2);
-};
 
+    void handleExit1(int value1, int value2);
+};
 #endif // RECEIVER_H
