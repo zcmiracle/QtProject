@@ -57,19 +57,18 @@ MainWindow::MainWindow(QWidget *parent)
 
         5、【ffmpeg -devices】主要作用：查看当前平台的可用设备
 
-        6、查看dshow支持的设备
-            + dshow 是window平台
-            + avfoundation 是mac平台
-
-        mac 平台：ffmpeg -f avfoundation -list_devices true -i dummy
+        6、【查看dshow支持的设备】
         window平台：ffmpeg -f dshow -list_devices true -i dummy
+            + avfoundation 是mac平台
+        mac 平台：ffmpeg -f avfoundation -list_devices true -i dummy
+            + dshow 是window平台
+
+        详细：
 
         -f dshow
             + dshow 支持的
-
         -list_devices true
             + 打印出所有的设备
-
         -i dummy 或 -i '' 或 -i ""
             + 立即退出
 
@@ -83,12 +82,10 @@ MainWindow::MainWindow(QWidget *parent)
 
          7、【指定设备进行录音】
          使用外接的麦克风进行录音，最后生成一个wav文件
-            ffmpeg -f dshow -i audio="xxx" out.wav
-
-         在Mac上通过编号指定设备
-            ffmpeg -f avfoundation -i :2 out.wav
-                + :0表示使用0号音频设备
-                + 0:2表示使用0号视频设备和2号音频设备
+         window平台：ffmpeg -f dshow -i audio="xxx" out.wav
+         mac平台：ffmpeg -f avfoundation -i :2 out.wav
+            + :0表示使用0号音频设备
+            + 0:2表示使用0号视频设备和2号音频设备
 
          8、【设置dshow参数】 或者 avfoundation的参数
          ffmpeg -h demuxer=dshow
@@ -101,6 +98,7 @@ MainWindow::MainWindow(QWidget *parent)
 
          ffmpeg -f avfoundation -list_options true -i audio="麦克风阵列 (Realtek(R) Audio)"
 
+         采样率范围是11025~44100Hz
       */
 
 }
