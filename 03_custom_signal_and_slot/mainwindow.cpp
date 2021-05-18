@@ -59,6 +59,20 @@ MainWindow::MainWindow(QWidget *parent)
 
      处理按钮点击可以使用 【Lambda的形式】 也可以使用 【自定义槽函数的形式】
 
+
+     自定义 信号 与 槽
+     信号发送者和接收者 必须继承自 QObject，qt中的控件最终都是继承自 QObject，
+     比如 QMainWindow、QPushButton等
+
+     信号发送者 sender.h
+        + Q_OBJECT 用以支持自定义信号和槽
+        自定义的信号需要写在 signals: 下面
+        【自定义的信号只需要声明，不需要实现】
+
+     信号接收者 receiver.h
+        + 自定义的槽写在 public slots: 下面
+
+
      */
 
 }

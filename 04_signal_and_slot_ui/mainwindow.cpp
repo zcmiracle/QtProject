@@ -8,6 +8,12 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    // 通过 ui-> 访问文件中的2个按钮
+    // 系统转为槽 自动生成的
+    ui->pushButton->setFixedSize(100, 50);
+    // 自己修改名字生成的button
+    ui->registerButton->setFixedSize(100, 30);
 }
 
 MainWindow::~MainWindow()
