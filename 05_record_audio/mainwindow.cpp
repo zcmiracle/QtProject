@@ -20,7 +20,8 @@ extern "C" {
     // 设备名称
     #define DEVICE_NAME ":0"
     // PCM文件的文件名
-    #define FILENAME "Users/xfb/Desktop/QT/out.pcm"
+//    #define FILENAME "Users/xfb/Desktop/QT/out.pcm"
+    #define FILENAME "/Users/zhoucheng/Desktop/qt/out.pcm"
 #else
     #define FMT_NAME "dshow"
     #define DEVICE_NAME "audio=xxx"
@@ -70,7 +71,7 @@ void MainWindow::on_audioButton_clicked() {
     // 设备名称
     const char *deviceName = DEVICE_NAME;
     // 选项
-    AVDictionary *options;
+    AVDictionary *options = {0};
     // 打开设备
     // int avformat_open_input(AVFormatContext **ps, const char *url, ff_const59 AVInputFormat *fmt, AVDictionary **options);
     int ret = avformat_open_input(&context, deviceName, fmt, &options);
@@ -99,18 +100,32 @@ void MainWindow::on_audioButton_clicked() {
     int count = 50;
 
     // 数据包
-    AVPacket pkt;
+    AVPacket *pkt = av_packet_alloc();
     // 不断采集数据
     // int av_read_frame(AVFormatContext *s, AVPacket *pkt);
-    while ((count-- > 0) && av_read_frame(context, &pkt) == 0) {
-        // 将数据写入文件
-        // qint64 write(const char *data, qint64 len);
-        file.write((const char *)pkt.data, pkt.size);
+    while ((count-- > 0)) {
+        int ret = av_read_frame(context, pkt);
+        if (ret == 0) { // 读取成功
+            // 将数据写入文件
+            file.write((const char *) pkt->data, pkt->size);
+            // 释放资源
+            av_packet_unref(pkt);
+        } else if (ret == AVERROR(EAGAIN)) {
+            continue;
+        } else {
+            char errbuf[1024];
+            // int av_strerror(int errnum, char *errbuf, size_t errbuf_size);
+            av_strerror(ret, errbuf, sizeof(errbuf));
+            qDebug() << "av_read_frame error" << errbuf << ret;
+            break;
+        }
     }
 
-    // 释放资源
     // 关闭文件
     file.close();
+
+    // 释放资源
+    av_packet_free(&pkt);
 
     // 关闭设备
     avformat_close_input(&context);
