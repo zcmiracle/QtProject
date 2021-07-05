@@ -9,10 +9,12 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    audiothead.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    audiothead.h \
     mainwindow.h
 
 FORMS += \
@@ -26,7 +28,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 macx {
     # 添加plist
-    QMAKE_INFO_PLIST = Info.plist
+    QMAKE_INFO_PLIST = mac/Info.plist
 
     # 设置包名
 #    QMAKE_TARGET_BUNDLE_PREFIX = 05_record_audio
