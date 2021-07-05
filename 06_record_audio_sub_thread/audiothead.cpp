@@ -1,6 +1,5 @@
 #include "audiothead.h"
 #include <QFile>
-#include <QThread>
 #include <QDebug>
 #include <QDateTime>
 
@@ -21,8 +20,8 @@ extern "C" {
     // 设备名称
     #define DEVICE_NAME ":0"
     // PCM文件的文件名
-    #define FILEPATH "Users/xfb/Desktop/QT/QtProject/"
-//    #define FILENAME "/Users/zhoucheng/Desktop/qt/out.pcm"
+//    #define FILEPATH "Users/xfb/Desktop/QT/QtProject/"
+    #define FILEPATH "/Users/zhoucheng/Desktop/qt/"
 #else
     // Windows
     #define FMT_NAME "dshow"
@@ -94,8 +93,6 @@ void AudioThead::run() {
         return;
     }
 
-    qDebug() << "来到了这里";
-
     // 打印录音设备的参数信息
     display(contxt);
 
@@ -130,13 +127,11 @@ void AudioThead::run() {
             char errbuf[1024];
             av_strerror(ret, errbuf, sizeof(errbuf));
             qDebug() << "av_read_frame error" << errbuf << ret;
+            break;
         }
 
-        // 释放pkt内部的资源
+        // 必须要加，释放pkt内部的资源
         av_packet_unref(pkt);
-
-        // 将数据写入文件
-        file.write((const char *) pkt->data, pkt->size);
     }
 
     // 关闭文件
@@ -148,11 +143,10 @@ void AudioThead::run() {
     // 关闭设备
     avformat_close_input(&contxt);
 
-    qDebug() << this << "正常结束";
+    qDebug() << this << "------正常结束------";
 }
 
 
-//
 void AudioThead::setStop(bool stop) {
     _stop = stop;
 }

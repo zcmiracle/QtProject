@@ -45,6 +45,7 @@ macx {
     LIBS += -L $${FFMPEG_HOME}/lib \
             -lavdevice \
             -lavformat \
+            -lavcodec \
             -lavutil \
 }
 

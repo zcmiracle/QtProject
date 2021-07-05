@@ -13,7 +13,7 @@ public:
 
 private:
     void run();
-    bool _stop;
+    bool _stop = false;
 
 signals:
 
