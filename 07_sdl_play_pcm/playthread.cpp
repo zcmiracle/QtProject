@@ -4,9 +4,19 @@
 #include <SDL2/SDL.h>
 
 #define FILENAME "/Users/xfb/Desktop/QT/QtProject/07_sdl_play_pcm/in.pcm"
+// 采样率
 #define SAMPLE_RATE 44100
+// 采样大小
 #define SAMPLE_SIZE 16
+// 声道数
 #define CHANNELS 2
+
+// 音频缓冲区的样本数量
+#define SAMPLES 1024
+// 每个样本占用多少个字节
+#define BYTES_PER_SAMPLE ((SAMPLE_SIZE * CHANNELS) / 8)
+// 文件缓冲区的大小
+//#define BUFFER_SIZE (SAMPLES * BYTES_PER_SAMPLE)
 #define BUFFER_SIZE 4096
 
 PlayThread::PlayThread(QObject *parent) : QThread(parent) {
@@ -24,6 +34,7 @@ PlayThread::~PlayThread() {
     qDebug() << this << "析构了";
 }
 
+
 int bufferLen;
 char *bufferData;
 
@@ -38,15 +49,14 @@ void pull_audio_data(void *userdata, Uint8 *stream, int len) {
     // 文件数据还没准备好
     if (bufferLen <= 0) return;
 
-    // 取len 和 bufferLen的最小值
+    // 取len 和 bufferLen的最小值 （为了保证数据安全，防止指针越界）
     len = (len > bufferLen) ? bufferLen : len;
 
-    // 填充数据 ??
+    // 填充数据
     SDL_MixAudio(stream, (Uint8 *)bufferData, len, SDL_MIX_MAXVOLUME);
     bufferData += len;
     bufferLen -= len;
 }
-
 
 /**
   SDL播放音频有2中模式：
@@ -65,9 +75,9 @@ void PlayThread::run() {
     spec.freq = SAMPLE_RATE;            // 采样率
     spec.channels = CHANNELS;           // 声道数
     spec.format = AUDIO_S16LSB;         // 采样格式 s16le
-    spec.samples= 1024;                 // 音频缓冲区的样本数量（必须是2的幂次）
+    spec.samples = 1024;                // 音频缓冲区的样本数量（必须是2的幂次）
     spec.callback = pull_audio_data;    // 回调
-//    spec.userdata = /*100*/;
+//    spec.userdata = 100;
 
     // 打开设备
     if (SDL_OpenAudio(&spec, nullptr)) {
@@ -90,19 +100,27 @@ void PlayThread::run() {
     // 开始播放(0取消暂停)
     SDL_PauseAudio(0);
 
-    // 存放从文件中读取的数据
+    // 存放从文件中读取的数据 数组
     char data[BUFFER_SIZE];
     while (!isInterruptionRequested()) {
+
+        // 只要从文件中读取的音频数据，还没有填充完毕，就跳过
+        if (bufferLen > 0) continue;
+
         bufferLen = file.read(data, BUFFER_SIZE);
+
+        // 文件数据已经读取完毕
         if (bufferLen <= 0) break;
 
         // 读取到了文件数据
         bufferData = data;
-        while (bufferLen > 0) {
-            SDL_Delay(1);
-        }
-    }
 
+//        // 等待音频数据填充完毕
+//        // 只要音频数据还没有填充完毕，就Delay(sleep)
+//        while (bufferLen > 0) { // 只要 bufferLen <= 0 重新从文件中读取数据 file.read(data, BUFFER_SIZE);
+//            SDL_Delay(1);
+//        }
+    }
 
     // 关闭文件
     file.close();
