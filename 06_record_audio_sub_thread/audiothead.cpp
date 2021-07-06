@@ -20,8 +20,8 @@ extern "C" {
     // 设备名称
     #define DEVICE_NAME ":0"
     // PCM文件的文件名
-//    #define FILEPATH "Users/xfb/Desktop/QT/QtProject/"
-    #define FILEPATH "/Users/zhoucheng/Desktop/qt/"
+    #define FILEPATH "/Users/xfb/Desktop/QT/QtProject/"
+//    #define FILEPATH "/Users/zhoucheng/Desktop/qt/"
 #else
     // Windows
     #define FMT_NAME "dshow"
@@ -52,18 +52,21 @@ AudioThead::~AudioThead() {
 
 
 void display(AVFormatContext *contxt) {
+
+    qDebug() << "打印设备信息";
+
     // 获取输入流
     AVStream *stream = contxt->streams[0];
     // 获取音频参数
     AVCodecParameters *parameter = stream->codecpar;
     // 声道数
-    qDebug() << parameter->channels;
+    qDebug() << "声道数：" << parameter->channels;
     // 采样率
-    qDebug() << parameter->sample_rate;
+    qDebug() << "采样率：" << parameter->sample_rate;
     // 采样格式
-    qDebug() << parameter->format;
+    qDebug() << "采样格式：" << parameter->format;
     // 每一个样本的一个声道占用多少个字节
-    qDebug() << av_get_bytes_per_sample((AVSampleFormat) parameter->format);
+    qDebug() << "每一个样本的一个声道占用多少个字节:" <<  av_get_bytes_per_sample((AVSampleFormat) parameter->format);
 }
 
 
@@ -114,14 +117,14 @@ void AudioThead::run() {
 
     // 数据包
     AVPacket *pkt = av_packet_alloc();
-    // 不断采集数据
-    while (isInterruptionRequested()) {
+    // 不断采集数据 !isInterruptionRequested 注意 !!!!!!
+    while (!isInterruptionRequested()) {
         // 不断采集数据
         ret = av_read_frame(contxt, pkt);
 
         if (ret== 0) {
             file.write((const char *) pkt->data, pkt->size);
-        } else if (ret == AVERROR(EAGAIN)) {
+        } else if (ret == AVERROR(EAGAIN)) { // #define AVERROR(e) (-(e))
             continue;
         } else {
             char errbuf[1024];

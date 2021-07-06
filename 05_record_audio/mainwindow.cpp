@@ -59,7 +59,7 @@ void MainWindow::on_audioButton_clicked() {
     };
 
     /**
-      mac录制     ffmpeg -f avfoundation -i :2 out.wav
+      mac录制     ffmpeg -f avfoundation -i :0 out.wav
       window录制  ffmpeg -f dshow -i audio="xxx" out.wav
       */
 

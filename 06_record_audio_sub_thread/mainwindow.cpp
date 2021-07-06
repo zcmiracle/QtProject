@@ -19,7 +19,8 @@ void MainWindow::on_audioButton_clicked() {
         _audioThread = new AudioThead(this);
         _audioThread->start();
 
-        connect(_audioThread, &AudioThead::finished, [this]() {
+        connect(_audioThread, &AudioThead::finished,
+        [this]() { // 线程结束
             _audioThread = nullptr;
             ui->audioButton->setText("开始录音");
         });

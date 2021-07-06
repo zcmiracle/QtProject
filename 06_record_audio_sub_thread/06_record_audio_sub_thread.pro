@@ -27,13 +27,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 
 macx {
+
     # 添加plist
     QMAKE_INFO_PLIST = mac/Info.plist
-
-    # 设置包名
-#    QMAKE_TARGET_BUNDLE_PREFIX = 05_record_audio
-#    QMAKE_BUNDLE = chat
-
     # 抽离
     FFMPEG_HOME = /usr/local/Cellar/ffmpeg/4.4_1
     # 打印路径
@@ -48,6 +44,3 @@ macx {
             -lavcodec \
             -lavutil \
 }
-
-DISTFILES += \
-    Info.plist
