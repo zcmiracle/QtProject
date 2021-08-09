@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-// SDL跨平台C语言多媒体开发库
+
 #include <SDL2/SDL.h>
 #include <playthread.h>
 

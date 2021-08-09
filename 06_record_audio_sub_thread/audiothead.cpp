@@ -101,7 +101,8 @@ void AudioThead::run() {
 
     // 文件名
     QString filename = FILEPATH;
-    filename += QDateTime::currentDateTime().toString("MM_dd_HH_mm_ss");
+    // 此处不能写 YYYY 大写，格式为yyyy 小写
+    filename += QDateTime::currentDateTime().toString("yyyy-MM_dd_HH_mm_ss");
     filename += ".pcm";
     QFile file(filename);
 
