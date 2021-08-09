@@ -9,4 +9,5 @@ SUBDIRS += \
     06_record_audio_sub_thread \
     07_sdl_play_pcm \
     08_sdl_play_pcm \
-    09_sdl_play_pcm
+    09_sdl_play_pcm \
+    10_record_audio_sub_thread
