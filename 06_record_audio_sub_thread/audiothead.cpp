@@ -51,7 +51,6 @@ AudioThead::~AudioThead() {
 
 
 void display(AVFormatContext *contxt) {
-
     qDebug() << "打印设备信息";
 
     // 获取输入流
@@ -66,6 +65,17 @@ void display(AVFormatContext *contxt) {
     qDebug() << "采样格式：" << parameter->format;
     // 每一个样本的一个声道占用多少个字节
     qDebug() << "每一个样本的一个声道占用多少个字节:" <<  av_get_bytes_per_sample((AVSampleFormat) parameter->format);
+}
+
+
+void showSpec(AVFormatContext *ctx) {
+
+    // 获取输入流
+    AVStream *stream = ctx->streams[0];
+    // 获取音频参数
+    AVCodecParameters *params = stream->codecpar;
+
+
 }
 
 
@@ -94,6 +104,13 @@ void AudioThead::run() {
         qDebug() << "打开设备失败" << errbuf;
         return;
     }
+
+
+    // 打印录音设备的参数信息
+    showSpec(contxt);
+
+
+
 
     // 打印录音设备的参数信息
     display(contxt);

@@ -14,21 +14,18 @@
 //#define SAMPLE_SIZE (SAMPLE_FORMAT & 0xFF)
 //#define SAMPLE_SIZE 16
 // 声道数
-#define CHANNELS
+#define CHANNELS 2
 
 
 // 音频缓冲区的样本数量
 #define SAMPLES 1024
-// 每个样本占用多少个字节
-#define BYTES_PER_SAMPLE ((SAMPLE_SIZE * CHANNELS) / 8)
+//#define SAMPLES 4096*8
+// 每个样本占用多少个字节 位运算方式
+#define BYTES_PER_SAMPLE ((SAMPLE_SIZE * CHANNELS) >> 3)
+//#define BYTES_PER_SAMPLE ((SAMPLE_SIZE * CHANNELS) / 8)
 // 文件缓冲区的大小
 #define BUFFER_SIZE (SAMPLES * BYTES_PER_SAMPLE)
 //#define BUFFER_SIZE 4096
-
-// 字节率
-//#define
-
-
 
 PlayThread::PlayThread(QObject *parent) : QThread(parent) {
     connect(this, &PlayThread::finished,
@@ -36,26 +33,21 @@ PlayThread::PlayThread(QObject *parent) : QThread(parent) {
 }
 
 PlayThread::~PlayThread() {
-
     disconnect();
     requestInterruption();
     quit();
     wait();
-
     qDebug() << this << "析构了";
 }
 
-
- //int bufferLen;
+//int bufferLen;
 //char *bufferData;
-
 // 利用结构体，取代上面的bufferLen和bufferData
 typedef struct {
     int len;
     int pullLen = 0; // 缓冲区每次拉取的数据
     char *data = nullptr;
 } AudioBuffer;
-
 
 // 等待音频设备回调（会回调多次）
 // Uint8 *stream：需要往stream中填充PCM数据
@@ -127,14 +119,12 @@ void PlayThread::run() {
     SDL_PauseAudio(0);
 
     // 存放从文件中读取的数据 数组
-//    char data[BUFFER_SIZE];
     Uint8 data[BUFFER_SIZE];
     while (!isInterruptionRequested()) {
 
         // 只要从文件中读取的音频数据，还没有填充完毕，就跳过
         if (buffer.len > 0) continue;
 
-//        buffer.len = file.read(data, BUFFER_SIZE);
         buffer.len = file.read((char *)data, BUFFER_SIZE);
 
         // 文件数据已经读取完毕
