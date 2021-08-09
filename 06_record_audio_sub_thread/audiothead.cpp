@@ -73,11 +73,17 @@ void showSpec(AVFormatContext *ctx) {
     // 获取输入流
     AVStream *stream = ctx->streams[0];
     // 获取音频参数
-    AVCodecParameters *params = stream->codecpar;
-
+    AVCodecParameters *parameter = stream->codecpar;
+    // 声道数
+    qDebug() << parameter->channels;
+    // 采样率
+    qDebug() << parameter->sample_rate;
+    // 采样格式
+    qDebug() << parameter->format;
+    // 每一个样本占用多少字节
+    qDebug() << av_get_bytes_per_sample((AVSampleFormat) parameter->format);
 
 }
-
 
 // 当线程启动的时候 start ，会自动调用run函数
 // run函数中的代码在子线程中执行的
@@ -105,12 +111,8 @@ void AudioThead::run() {
         return;
     }
 
-
     // 打印录音设备的参数信息
     showSpec(contxt);
-
-
-
 
     // 打印录音设备的参数信息
     display(contxt);
