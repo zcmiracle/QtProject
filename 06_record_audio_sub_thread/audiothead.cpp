@@ -36,7 +36,6 @@ AudioThead::AudioThead(QObject *parent) : QThread(parent) {
             this, &AudioThead::deleteLater);
 }
 
-
 // 析构函数
 AudioThead::~AudioThead() {
     // 断开所有的连接
